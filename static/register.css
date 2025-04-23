@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.container {
+    background-color: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    width: 500px;
+    height: 450px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 25px;
+    font-size: 2rem;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #444;
+    text-align: left;
+}
+
+input[type="email"],
+input[type="password"] {
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #74ebd5;
+    outline: none;
+}
+
+input[type="submit"] {
+    padding: 12px;
+    background-color: #74ebd5;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #4ecdc4;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+a {
+    color: #0077ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

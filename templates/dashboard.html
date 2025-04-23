@@ -1,0 +1,253 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit Converter</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<body>
+
+  <div class="container">
+    <h2>Unit Converter</h2> -->
+
+    
+
+    <br><br>
+
+    <label for="category">Select Category:</label>
+    <select id="category" onchange="updateUnits()">
+      <option value="length">Length</option>
+      <option value="mass">Mass</option>
+      <option value="temperature">Temperature</option>
+      <option value="volume">Volume</option>
+      <option value="time">Time</option>
+      <option value="speed">Speed</option>
+      <option value="area">Area</option>
+      <option value="energy">Energy</option>
+      <option value="power">Power</option>
+      <option value="pressure">Pressure</option>
+    </select>
+
+    <br><br>
+
+    <label for="fromUnit">From:</label>
+    <select id="fromUnit"></select>
+
+    <label for="toUnit">To:</label>
+    <select id="toUnit"></select>
+
+    <br><br>
+
+    <input type="number" id="inputValue" placeholder="Enter value">
+    <button onclick="convert()">Convert</button>
+
+    <p id="result"></p>
+
+    <button id="logoutBtn" onclick="logout()">Logout</button>
+    <a href="{{ url_for('profile') }}">
+      <button class="btn">My Profile</button>
+    </a>
+    
+    <form action="/delete_account" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This will delete all your data.');">
+      <button type="submit" class="btn btn-danger">Delete My Account</button>
+    </form>
+  
+  </div>
+
+  <script>
+    const units = {
+      length: {
+        from: ['meters', 'kilometers', 'miles', 'inches'],
+        to: ['meters', 'kilometers', 'miles', 'inches'],
+        conversions: {
+          meters: { kilometers: 0.001, miles: 0.000621371, inches: 39.3701 },
+          kilometers: { meters: 1000, miles: 0.621371, inches: 39370.1 },
+          miles: { meters: 1609.34, kilometers: 1.60934, inches: 63360 },
+          inches: { meters: 0.0254, kilometers: 0.0000254, miles: 0.000015783 },
+        }
+      },
+      mass: {
+        from: ['kilograms', 'grams', 'pounds', 'ounces'],
+        to: ['kilograms', 'grams', 'pounds', 'ounces'],
+        conversions: {
+          kilograms: { grams: 1000, pounds: 2.20462, ounces: 35.274 },
+          grams: { kilograms: 0.001, pounds: 0.00220462, ounces: 0.035274 },
+          pounds: { kilograms: 0.453592, grams: 453.592, ounces: 16 },
+          ounces: { kilograms: 0.0283495, grams: 28.3495, pounds: 0.0625 },
+        }
+      },
+      temperature: {
+        from: ['celsius', 'fahrenheit', 'kelvin'],
+        to: ['celsius', 'fahrenheit', 'kelvin'],
+        conversions: {
+          celsius: { fahrenheit: val => val * 9 / 5 + 32, kelvin: val => val + 273.15 },
+          fahrenheit: { celsius: val => (val - 32) * 5 / 9, kelvin: val => (val - 32) * 5 / 9 + 273.15 },
+          kelvin: { celsius: val => val - 273.15, fahrenheit: val => (val - 273.15) * 9 / 5 + 32 },
+        }
+      },
+      volume: {
+        from: ['liters', 'milliliters', 'gallons', 'cups'],
+        to: ['liters', 'milliliters', 'gallons', 'cups'],
+        conversions: {
+          liters: { milliliters: 1000, gallons: 0.264172, cups: 4.22675 },
+          milliliters: { liters: 0.001, gallons: 0.000264172, cups: 0.00422675 },
+          gallons: { liters: 3.78541, milliliters: 3785.41, cups: 16 },
+          cups: { liters: 0.236588, milliliters: 236.588, gallons: 0.0625 },
+        }
+      },
+      time: {
+        from: ['seconds', 'minutes', 'hours', 'days'],
+        to: ['seconds', 'minutes', 'hours', 'days'],
+        conversions: {
+          seconds: { minutes: 1 / 60, hours: 1 / 3600, days: 1 / 86400 },
+          minutes: { seconds: 60, hours: 1 / 60, days: 1 / 1440 },
+          hours: { seconds: 3600, minutes: 60, days: 1 / 24 },
+          days: { seconds: 86400, minutes: 1440, hours: 24 },
+        }
+      },
+      speed: {
+        from: ['mps', 'kmph', 'mph', 'knots'],
+        to: ['mps', 'kmph', 'mph', 'knots'],
+        conversions: {
+          mps: { kmph: 3.6, mph: 2.23694, knots: 1.94384 },
+          kmph: { mps: 1 / 3.6, mph: 0.621371, knots: 0.539957 },
+          mph: { mps: 0.44704, kmph: 1.60934, knots: 0.868976 },
+          knots: { mps: 0.514444, kmph: 1.852, mph: 1.15078 },
+        }
+      },
+      area: {
+        from: ['square meters', 'square kilometers', 'square feet', 'acres'],
+        to: ['square meters', 'square kilometers', 'square feet', 'acres'],
+        conversions: {
+          'square meters': { 'square kilometers': 1e-6, 'square feet': 10.7639, acres: 0.000247105 },
+          'square kilometers': { 'square meters': 1e6, 'square feet': 1.07639e7, acres: 247.105 },
+          'square feet': { 'square meters': 0.092903, 'square kilometers': 9.2903e-8, acres: 2.2957e-5 },
+          acres: { 'square meters': 4046.86, 'square kilometers': 0.00404686, 'square feet': 43560 },
+        }
+      },
+      energy: {
+        from: ['joules', 'calories', 'kilojoules', 'kilocalories'],
+        to: ['joules', 'calories', 'kilojoules', 'kilocalories'],
+        conversions: {
+          joules: { calories: 0.239006, kilojoules: 0.001, kilocalories: 0.000239006 },
+          calories: { joules: 4.184, kilojoules: 0.004184, kilocalories: 0.001 },
+          kilojoules: { joules: 1000, calories: 239.006, kilocalories: 0.239006 },
+          kilocalories: { joules: 4184, calories: 1000, kilojoules: 4.184 },
+        }
+      },
+      power: {
+        from: ['watts', 'kilowatts', 'horsepower'],
+        to: ['watts', 'kilowatts', 'horsepower'],
+        conversions: {
+          watts: { kilowatts: 0.001, horsepower: 0.00134102 },
+          kilowatts: { watts: 1000, horsepower: 1.34102 },
+          horsepower: { watts: 745.7, kilowatts: 0.7457 },
+        }
+      },
+      pressure: {
+        from: ['pascals', 'bars', 'atmospheres', 'psi'],
+        to: ['pascals', 'bars', 'atmospheres', 'psi'],
+        conversions: {
+          pascals: { bars: 1e-5, atmospheres: 9.86923e-6, psi: 0.000145038 },
+          bars: { pascals: 1e5, atmospheres: 0.986923, psi: 14.5038 },
+          atmospheres: { pascals: 101325, bars: 1.01325, psi: 14.696 },
+          psi: { pascals: 6894.76, bars: 0.0689476, atmospheres: 0.068046 },
+        }
+      }
+    };
+
+    function updateUnits() {
+      const category = document.getElementById("category").value;
+      const fromUnit = document.getElementById("fromUnit");
+      const toUnit = document.getElementById("toUnit");
+
+      fromUnit.innerHTML = "";
+      toUnit.innerHTML = "";  
+
+      units[category].from.forEach(unit => {
+        fromUnit.innerHTML += `<option value="${unit}">${unit}</option>`;
+      });
+      units[category].to.forEach(unit => {
+        toUnit.innerHTML += `<option value="${unit}">${unit}</option>`;
+      });
+    }
+
+    function convert() {
+      const category = document.getElementById("category").value;
+      const fromUnit = document.getElementById("fromUnit").value;
+      const toUnit = document.getElementById("toUnit").value;
+      const inputValue = parseFloat(document.getElementById("inputValue").value);
+      let result;
+
+      if (category === 'temperature') {
+        result = units[category].conversions[fromUnit][toUnit](inputValue);
+      } else {
+        result = inputValue * units[category].conversions[fromUnit][toUnit];
+      }
+      if(fromUnit === toUnit){
+        result = inputValue;
+      }
+
+        document.getElementById("result").textContent = `Result: ${result}`;
+        fetch('/save_conversion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          category:category,
+          from_unit: fromUnit,
+          to_unit: toUnit,
+          input_value: inputValue,
+          result_value: result
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          console.log("Conversion saved!");
+        } else {
+          console.log("Failed to save conversion.");
+        }
+      });
+
+    }
+    
+
+    function logout() {
+      fetch('/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Redirect to login page
+          window.location.href = '/login';
+        } else {
+          alert("Logout failed.");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred while logging out.");
+      });
+    }
+
+    updateUnits();
+  </script> 
+
+ </body>
+</html> 
+

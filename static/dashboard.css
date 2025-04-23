@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1f4037, #99f2c8);
+  min-height: 100vh;
+  display: flex;
+  border: black;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
+
+.container {
+  background-color: rgba(243, 236, 236, 0.95);
+  padding: 30px 40px;
+  border:  black;
+  border-radius: 50px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+}
+
+h2 {
+  color: #1f4037;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin: 10px 0 5px;
+}
+
+select,
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px 5px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #56ab2f, #a8e063);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #3e8e41, #76b852);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #e60039, #ff1e00);
+}
+
+.alert {
+  margin: 10px auto;
+  padding: 10px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+#result {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #333;
+} 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Your Profile</h1>
+    <div class="info">
+      <p><strong>Email:</strong> {{ user_email }}</p>
+    </div>
+    
+
+    <h2>Conversion History</h2>
+    {% if history %}
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Topic</th>
+        <th>From Unit</th>
+        <th>To Unit</th>
+        <th>Value</th>
+        <th>Result</th>
+        <th>Timestamp</th>
+      </tr>
+      {% for row in history %}
+      <tr>
+        <td>{{ row.id }}</td>         
+        <td>{{ row.category }}</td>                   
+        <td>{{ row.from_unit }}</td>    
+        <td>{{ row.to_unit }}</td>      
+        <td>{{ row.input_value }}</td>  
+        <td>{{ row.result_value }}</td> 
+        <td>{{ row.timestamp }}</td>   
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <p style="text-align:center;">You haven't done any conversions yet.</p>
+    {% endif %}
+
+    <a class="back-btn" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+  </div>
+</body>
+</html>
